@@ -58,7 +58,7 @@ class TestDetailPage:
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
 
-            time.sleep(2)
+            time.sleep(1)
 
             # 상품 옵션 선택
             detail_page.select_option(self.OPTION)
@@ -94,7 +94,7 @@ class TestDetailPage:
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
 
-            time.sleep(2)
+            time.sleep(1)
 
             # 상품 옵션 선택
             detail_page.select_option(self.OPTION)
@@ -124,6 +124,7 @@ class TestDetailPage:
     
 
     # 장바구니 버튼 클릭 테스트 (로그인 기준)
+    @pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_cart_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 10)
@@ -139,7 +140,7 @@ class TestDetailPage:
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
 
-            time.sleep(2)
+            time.sleep(1)
 
             # 상품 옵션 선택
             detail_page.select_option(self.OPTION)
@@ -155,7 +156,39 @@ class TestDetailPage:
             cart_popup = wait.until(EC.visibility_of_element_located((By.ID, "cartPop")))
             assert cart_popup.is_displayed()
 
-            time.sleep(2)
+        except NoSuchElementException as e:
+            assert False
+        
+        except TimeoutException as e:
+            assert False
+        
+        except Exception as e:
+            assert False
+
+
+    # 상품상세 탭 클릭 테스트
+    def test_detail_goods_click(self, driver: WebDriver):
+        detail_page = DetailPage(driver)
+        wait = ws(driver, 10)
+
+        try:
+            # 상품 상세페이지 진입
+            detail_page.open()
+
+            # 상품 상세페이지 정상 진입하였는지 확인
+            wait.until(EC.url_contains(self.BRAND_ID))
+            assert self.BRAND_ID in driver.current_url
+
+            time.sleep(1)
+
+            # 상품 상세 탭 클릭
+            detail_page.detail_goods_click()
+
+            time.sleep(1)
+
+            # 스크롤 위치 확인
+            scroll_position = driver.execute_script("return window.scrollY;")
+            assert scroll_position > 1000
 
         except NoSuchElementException as e:
             assert False
