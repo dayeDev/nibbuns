@@ -2,11 +2,11 @@ import pytest
 import sys
 import os
 import time
+import logging
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait as ws
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 # 상위 디렉토리로 이동 후 src를 경로에 추가
@@ -20,8 +20,27 @@ class TestDetailPage:
     OPTION = "아이보리"
     OPTION_NAME = "MK_p-name"
 
+    # 로그 및 스크린샷 경로 설정
+    LOG_DIR = "fail_log/test_detail_page"
+    SCREENSHOT_DIR = f"{LOG_DIR}/fail_screenshot"
+
+    # 폴더가 없다면 생성
+    os.makedirs(LOG_DIR, exist_ok=True)
+    os.makedirs(SCREENSHOT_DIR, exist_ok=True)
+
+    # 로깅 설정
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    file_handler = logging.FileHandler(f"{LOG_DIR}/detail_page.log", encoding = "utf-8")
+    file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"))
+    logger.addHandler(file_handler)
+
+    # 스크린샷 설정
+    timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+    screenshot_name = os.path.join(SCREENSHOT_DIR, f"error_{timestamp}.jpg")
+
     # 상품 상세페이지 진입 테스트
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_open_detail_page(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -33,19 +52,26 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
         
         except NoSuchElementException as e:
+            self.logger.error(f"상품 상세페이지 진입 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except TimeoutException as e:
+            self.logger.error(f"상품 상세페이지 진입 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"상품 상세페이지 진입 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
     
     # 상품 옵션 선택 테스트
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_select_option(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -57,6 +83,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -66,19 +93,26 @@ class TestDetailPage:
             # 상품 옵션 정상 선택되었는지 확인
             option_check = wait.until(EC.presence_of_element_located((By.CLASS_NAME, self.OPTION_NAME)))
             assert self.OPTION == option_check.text
+            self.logger.info("상품 옵션 선택 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"상품 옵션 선택 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except TimeoutException as e:
+            self.logger.error(f"상품 옵션 선택 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"상품 옵션 선택 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
 
     # 상품 바로 구매 버튼 클릭 테스트 (로그인 기준)
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_buy_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -93,6 +127,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -102,6 +137,7 @@ class TestDetailPage:
             # 상품 옵션 정상 선택되었는지 확인
             option_check = wait.until(EC.presence_of_element_located((By.CLASS_NAME, self.OPTION_NAME)))
             assert self.OPTION == option_check.text
+            self.logger.info("상품 옵션 선택 성공")
 
             # 바로 구매 버튼 클릭
             detail_page.buy_click()
@@ -112,19 +148,26 @@ class TestDetailPage:
             # 구매 페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains("order"))
             assert "order" in driver.current_url
+            self.logger.info("상품 구매 버튼 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"상품 구매 버튼 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except TimeoutException as e:
+            self.logger.error(f"상품 구매 버튼 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"상품 구매 버튼 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
     
 
     # 장바구니 버튼 클릭 테스트 (로그인 기준)
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_cart_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -139,6 +182,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -148,6 +192,7 @@ class TestDetailPage:
             # 상품 옵션 정상 선택되었는지 확인
             option_check = wait.until(EC.presence_of_element_located((By.CLASS_NAME, self.OPTION_NAME)))
             assert self.OPTION == option_check.text
+            self.logger.info("상품 옵션 선택 성공")
 
             # 장바구니 버튼 클릭
             detail_page.cart_click()
@@ -155,19 +200,26 @@ class TestDetailPage:
             # 장바구니 담김 팝업 노출 확인
             cart_popup = wait.until(EC.visibility_of_element_located((By.ID, "cartPop")))
             assert cart_popup.is_displayed()
+            self.logger.info("장바구니 버튼 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"장바구니 버튼 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except TimeoutException as e:
+            self.logger.error(f"장바구니 버튼 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"장바구니 버튼 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
 
     # 상품상세 탭 클릭 테스트
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_detail_goods_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -179,6 +231,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -190,19 +243,26 @@ class TestDetailPage:
             # 눌렸는지 확인
             active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_GOODS_EL + ".active")))
             assert "active" in active_tab.get_attribute("class")
+            self.logger.info("상품상세 탭 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"상품상세 탭 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except TimeoutException as e:
+            self.logger.error(f"상품상세 탭 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"상품상세 탭 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
 
     # 상품후기 탭 클릭 테스트
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_detail_review_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -214,6 +274,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -225,19 +286,26 @@ class TestDetailPage:
             # 눌렸는지 확인
             active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_REVIEW_EL + ".active")))
             assert "active" in active_tab.get_attribute("class")
+            self.logger.info("상품후기 탭 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"상품후기 탭 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
-        
+
         except TimeoutException as e:
+            self.logger.error(f"상품후기 탭 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"상품후기 탭 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
 
     # 상품문의 탭 클릭 테스트
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_detail_qna_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -249,6 +317,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -260,19 +329,26 @@ class TestDetailPage:
             # 눌렸는지 확인
             active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_QNA_EL + ".active")))
             assert "active" in active_tab.get_attribute("class")
+            self.logger.info("상품문의 탭 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"상품문의 탭 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
-        
+
         except TimeoutException as e:
+            self.logger.error(f"상품문의 탭 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"상품문의 탭 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
     
     # 관련상품 탭 클릭 테스트
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_detail_relation_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -284,6 +360,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -295,19 +372,26 @@ class TestDetailPage:
             # 눌렸는지 확인
             active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_RELATION_EL + ".active")))
             assert "active" in active_tab.get_attribute("class")
+            self.logger.info("관련상품 탭 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"관련상품 탭 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
-        
+
         except TimeoutException as e:
+            self.logger.error(f"관련상품 탭 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"관련상품 탭 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
     
     # 배송 교환 반품 탭 클릭 테스트
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_detail_change_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -319,10 +403,11 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
-            # 관련상품 탭 클릭
+            # 배송 교환 반품 탭 클릭
             detail_page.detail_change_click()
 
             time.sleep(3)
@@ -330,20 +415,26 @@ class TestDetailPage:
             # 눌렸는지 확인
             active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_CHANGE_EL + ".active")))
             assert "active" in active_tab.get_attribute("class")
+            self.logger.info("배송 교환 반품 탭 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"배송 교환 반품 탭 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
-        
+
         except TimeoutException as e:
+            self.logger.error(f"배송 교환 반품 탭 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"배송 교환 반품 탭 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
 
 
-    
-    # 상품 하단 스크롤 후 바로 구매 버튼 클릭 테스트 (로그인 기준)
-    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    # 스크롤 후 바로 구매 버튼 클릭 테스트 (로그인 기준)
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_fixed_buy_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 20)
@@ -358,6 +449,7 @@ class TestDetailPage:
             # 상품 상세페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains(self.BRAND_ID))
             assert self.BRAND_ID in driver.current_url
+            self.logger.info("상품 상세페이지 진입 성공")
 
             time.sleep(1)
 
@@ -367,14 +459,17 @@ class TestDetailPage:
             # 상품 옵션 정상 선택되었는지 확인
             option_check = wait.until(EC.presence_of_element_located((By.CLASS_NAME, self.OPTION_NAME)))
             assert self.OPTION == option_check.text
+            self.logger.info("상품 옵션 선택 성공")
 
             time.sleep(2)
 
             # 스크롤 후 바로 구매 버튼 클릭
             detail_page.fixed_buy_click()
 
+            # 스크롤 후 바로 구매 버튼 클릭하였는지 확인
             info_fixed = wait.until(EC.presence_of_element_located((By.ID, "info")))
             assert info_fixed.is_displayed()
+            self.logger.info("스크롤 후 바로 구매 버튼 클릭 성공")
 
             time.sleep(2)
 
@@ -387,12 +482,19 @@ class TestDetailPage:
             # 구매 페이지 정상 진입하였는지 확인
             wait.until(EC.url_contains("order"))
             assert "order" in driver.current_url
+            self.logger.info("상품 구매 버튼 클릭 성공")
 
         except NoSuchElementException as e:
+            self.logger.error(f"스크롤 후 바로 구매 버튼 클릭 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except TimeoutException as e:
+            self.logger.error(f"스크롤 후 바로 구매 버튼 클릭 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False
         
         except Exception as e:
+            self.logger.error(f"스크롤 후 바로 구매 버튼 클릭 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
             assert False

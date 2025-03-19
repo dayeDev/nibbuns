@@ -84,9 +84,7 @@ class DetailPage:
     def handle_alert(self):
         try:
             alert = self.driver.switch_to.alert
-            alert_text = alert_text
             alert.accept()
-            return alert_text
         except:
             pass
 
