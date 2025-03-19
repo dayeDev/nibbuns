@@ -15,3 +15,46 @@ class MainPage:
     # 메인 페이지 열기
     def open(self):
         self.driver.get(self.URL)
+
+    # 버튼 클릭
+    def click_news(self):
+        self.click_button("//a[@class='child pink' and contains(text(), 'NEW5%')]")
+    
+    def click_best(self):
+        self.click_button("//a[@class='child purple' and contains(text(), 'BEST50')]")
+   
+    def click_top(self):
+        self.click_button("//a[@class='child ' and contains(text(), 'TOP') and @style='width: 27px; float: right;']")
+    
+    def click_blouse_shirt(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=024')]", "shopbrand.html?xcode=024")
+
+    def click_dress(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=025')]", "shopbrand.html?xcode=025")
+
+    def click_pants(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=026')]", "shopbrand.html?xcode=026")
+
+    def click_skirt(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=027')]", "shopbrand.html?xcode=027")
+
+    def click_outer(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=028')]", "shopbrand.html?xcode=028")
+    
+    def click_bag_shoes(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=029')]", "shopbrand.html?xcode=029")
+    
+    def click_acc(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=030')]", "shopbrand.html?xcode=030")
+    
+    def click_inner_season(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=031')]", "shopbrand.html?xcode=031")
+
+    def click_sale(self):
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=009')]", "shopbrand.html?xcode=009")
+
+
+
+    # <정상로딩테스트>
+    # 로고 클릭 시 메인 페이지 이동 <제일 나중에 해야지 
+    # 
