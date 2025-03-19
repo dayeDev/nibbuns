@@ -3,7 +3,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
-
 @pytest.fixture(scope="function")
 def driver():
     chrome_options = Options()
@@ -22,5 +21,5 @@ def driver():
     driver.implicitly_wait(5)  # 🌟 암시적 대기 추가 (요소 로딩 기다리기)
 
     yield driver
-
+    
     driver.quit()
