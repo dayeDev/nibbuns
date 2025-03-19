@@ -71,8 +71,8 @@ class LoginPage:
 
     def enter_credentials(self, username, password):
         # 아이디와 비밀번호 입력
-        username_field = self.driver.find_element(By.NAME, "user_id")  # 아이디 입력 필드
-        password_field = self.driver.find_element(By.NAME, "password")  # 비밀번호 입력 필드
+        username_field = self.driver.find_element(By.NAME, "id")  # 아이디 입력 필드
+        password_field = self.driver.find_element(By.NAME, "passwd")  # 비밀번호 입력 필드
 
         username_field.send_keys(username)
         password_field.send_keys(password)
@@ -80,7 +80,7 @@ class LoginPage:
 
     def submit_login(self):
         # 로그인 버튼 클릭
-        submit_button = self.driver.find_element(By.XPATH, '//button[contains(text(), "로그인")]')
+        submit_button = self.driver.find_element(By.XPATH, '//a[contains(@class, "CSSbuttonBlack fe")]')
         submit_button.click()
         time.sleep(3)  # 로그인 처리 대기
 
