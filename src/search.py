@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
 
 class Search:
+    SEARCH_INPUT_SELECTOR = "input.MS_search_word.input-keyword"
     def __init__(self, driver:WebDriver):
         self.driver = driver
         
@@ -17,10 +18,15 @@ class Search:
         search_input_box.send_keys(item_name)
         search_input_box.send_keys(Keys.ENTER)
 
-    # 검색 후 정렬 버튼 클릭
-    def sort_by_items(self, sort_type: str):
-        sort_xpath = f"//a[span[text()='{sort_type}']]"
-        sort_button = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, sort_xpath))
-        )
-        sort_button.click()
+    # # 검색 후 정렬 버튼 클릭
+    # def sort_by_items(self, sort_type: str):
+    #     sort_xpath = f"//button[contains(text(), '{sort_type}')]"
+    #     try:
+    #         sort_button = WebDriverWait(self.driver, 10).until(
+    #             EC.element_to_be_clickable((By.XPATH, sort_xpath)))
+    #         sort_button.click()
+    #     except Exception as e:
+    #         print(f"❌ 일반 클릭 실패: {str(e)}\n➡ JavaScript 클릭 시도")
+    #         self.driver.execute_script("arguments[0].click();", sort_button)
+
+

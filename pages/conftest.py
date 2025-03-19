@@ -1,4 +1,3 @@
-
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -12,7 +11,7 @@ def driver():
     chrome_options.add_argument('--disable-popup-blocking')
 
     driver = webdriver.Chrome(service=Service(), options=chrome_options)
-
+    
     yield driver
-
+    
     driver.quit()
