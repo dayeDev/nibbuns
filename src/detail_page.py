@@ -8,9 +8,9 @@ from selenium.webdriver.support.select import Select
 
 class DetailPage:
     # 요소
-    URL = "https://www.nibbuns.co.kr/shop/shopdetail.html?branduid=69560&xcode=030&mcode=003&scode=&type=Y&sort=manual&cur_code=030&search=&GfDT=amV7"
-    OPTION_LIST_NAME = "optionlist[]"
-    BUY_BUTTON_CLASS = "btn_buy fe"
+    URL = "https://www.nibbuns.co.kr/shop/shopdetail.html?branduid=69560"
+    OPTION_LIST_CLASS = "basic_option"
+    BUY_BUTTON_CLASS = "btn_buy"
     CART_BUTTON_ID = "cartBtn"
     DETAIL_GOODS_TEXT = "상품상세"
     DETAIL_REVIEW_TEXT = "상품후기"
@@ -30,8 +30,10 @@ class DetailPage:
 
     # 상품 옵션 선택
     def select_option(self, option):
-        select = Select(self.wait.until(EC.presence_of_element_located((By.NAME, self.OPTION_LIST_NAME))))    # option 선택용 Select 모듈 사용
-        select.select_by_value(option)
+        option_dropdown = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, self.OPTION_LIST_CLASS)))
+        option_dropdown.click()
+        select = Select(option_dropdown) # option 선택용 Select 모듈 사용
+        select.select_by_visible_text(option)
     
     # 바로 구매 버튼 클릭
     def buy_click(self):
@@ -74,13 +76,26 @@ class DetailPage:
         self.driver.execute_script("arguments[0].scrollIntoView(true);", fixed_buy_button)
         fixed_buy_button.click()
 
+    # 알럿 처리 함수
+    def handle_alert(self):
+        try:
+            alert = self.driver.switch_to.alert
+            alert_text = alert_text
+            alert.accept()
+            return alert_text
+        except:
+            pass
+
     # 임시 로그인 함수
     def login(self):
         self.driver.get("https://www.nibbuns.co.kr/shop/member.html?type=login")
         time.sleep(1)
-        self.driver.find_element(By.NAME, "ID").send_keys("kim02jo")
-        self.driver.find_element(By.NAME, "passwd").send_keys("1q2w3e4r!@")
-        self.driver.find_element(By.CLASS_NAME, "CSSbuttonBlack fe").click()
+        id_input = self.wait.until(EC.visibility_of_element_located((By.NAME, "id")))
+        id_input.send_keys("kim02jo")
+        pw_input = self.wait.until(EC.visibility_of_element_located((By.NAME, "passwd")))
+        pw_input.send_keys("1q2w3e4r!@")
+        login_button = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "CSSbuttonBlack")))
+        login_button.click()
         time.sleep(1)
     
 
