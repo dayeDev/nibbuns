@@ -9,15 +9,15 @@ from selenium.webdriver.support.select import Select
 class DetailPage:
     # 요소
     URL = "https://www.nibbuns.co.kr/shop/shopdetail.html?branduid=69560"
-    OPTION_LIST_CLASS = "basic_option"
-    BUY_BUTTON_CLASS = "btn_buy"
-    CART_BUTTON_ID = "cartBtn"
-    DETAIL_GOODS_TEXT = "상품상세"
-    DETAIL_REVIEW_TEXT = "상품후기"
-    DETAIL_QNA_TEXT = "상품문의"
-    DETAIL_RELATION_TEXT = "관련상품"
-    DETAIL_CHANGE_TEXT = "배송"
-    FIXED_BUY_ID = "fixed_buy"
+    OPTION_LIST_EL = "basic_option"
+    BUY_BUTTON_EL = "btn_buy"
+    CART_BUTTON_EL = "cartBtn"
+    DETAIL_GOODS_EL = "#productDetail li.first > a"
+    DETAIL_REVIEW_EL = "#productDetail li:nth-child(2) > a"
+    DETAIL_QNA_EL = "#productDetail li:nth-child(3) > a"
+    DETAIL_RELATION_EL = "#productDetail > div.page-body > div:nth-child(3) > ul > li:nth-child(4) > a"
+    DETAIL_CHANGE_EL = "#productDetail li:nth-child(5) > a"
+    FIXED_BUY_EL = "fixed_buy"
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -30,49 +30,49 @@ class DetailPage:
 
     # 상품 옵션 선택
     def select_option(self, option):
-        option_dropdown = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, self.OPTION_LIST_CLASS)))
+        option_dropdown = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, self.OPTION_LIST_EL)))
         option_dropdown.click()
         select = Select(option_dropdown) # option 선택용 Select 모듈 사용
         select.select_by_visible_text(option)
     
     # 바로 구매 버튼 클릭
     def buy_click(self):
-        buy_button = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, self.BUY_BUTTON_CLASS)))
+        buy_button = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, self.BUY_BUTTON_EL)))
         buy_button.click()
 
     # 장바구니 버튼 클릭
     def cart_click(self):
-        cart_button = self.wait.until(EC.element_to_be_clickable((By.ID, self.CART_BUTTON_ID)))
+        cart_button = self.wait.until(EC.element_to_be_clickable((By.ID, self.CART_BUTTON_EL)))
         cart_button.click()
 
     # 상품상세 탭 클릭
     def detail_goods_click(self):
-        detail_goods_tab = self.wait.until(EC.element_to_be_clickable((By.LINK_TEXT, self.DETAIL_GOODS_TEXT)))
+        detail_goods_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_GOODS_EL)))
         detail_goods_tab.click()
 
     # 상품후기 탭 클릭
     def detail_review_click(self):
-        detail_review_tab = self.wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, self.DETAIL_REVIEW_TEXT)))
+        detail_review_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_REVIEW_EL)))
         detail_review_tab.click()
     
     # 상품문의 탭 클릭
     def detail_qna_click(self):
-        detail_qna_tab = self.wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, self.DETAIL_QNA_TEXT)))
+        detail_qna_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_QNA_EL)))
         detail_qna_tab.click()
 
-    # 관련상품 클릭
+    # 관련상품 탭 클릭
     def detail_relation_click(self):
-        detail_relation_tab = self.wait.until(EC.element_to_be_clickable((By.LINK_TEXT, self.DETAIL_RELATION_TEXT)))
+        detail_relation_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_RELATION_EL)))
         detail_relation_tab.click()
 
-    # 배송 교환 반품 클릭
+    # 배송 교환 반품 탭 클릭
     def detail_change_click(self):
-        detail_change_tab = self.wait.until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, self.DETAIL_CHANGE_TEXT)))
+        detail_change_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_CHANGE_EL)))
         detail_change_tab.click()
 
     # 하단 스크롤 후 바로 구매 클릭
     def fixed_buy_click(self):
-        fixed_buy_button = self.wait.until(EC.presence_of_element_located((By.ID, self.FIXED_BUY_ID)))
+        fixed_buy_button = self.wait.until(EC.presence_of_element_located((By.ID, self.FIXED_BUY_EL)))
         self.driver.execute_script("arguments[0].scrollIntoView(true);", fixed_buy_button)
         fixed_buy_button.click()
 

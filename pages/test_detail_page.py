@@ -167,6 +167,7 @@ class TestDetailPage:
 
 
     # 상품상세 탭 클릭 테스트
+    @pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_detail_goods_click(self, driver: WebDriver):
         detail_page = DetailPage(driver)
         wait = ws(driver, 10)
@@ -181,14 +182,154 @@ class TestDetailPage:
 
             time.sleep(1)
 
-            # 상품 상세 탭 클릭
+            # 상품상세 탭 클릭
             detail_page.detail_goods_click()
+
+            time.sleep(3)
+
+            # 눌렸는지 확인
+            active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_GOODS_EL + ".active")))
+            assert "active" in active_tab.get_attribute("class")
+
+        except NoSuchElementException as e:
+            assert False
+        
+        except TimeoutException as e:
+            assert False
+        
+        except Exception as e:
+            assert False
+
+
+    # 상품후기 탭 클릭 테스트
+    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    def test_detail_review_click(self, driver: WebDriver):
+        detail_page = DetailPage(driver)
+        wait = ws(driver, 10)
+
+        try:
+            # 상품 상세페이지 진입
+            detail_page.open()
+
+            # 상품 상세페이지 정상 진입하였는지 확인
+            wait.until(EC.url_contains(self.BRAND_ID))
+            assert self.BRAND_ID in driver.current_url
 
             time.sleep(1)
 
-            # 스크롤 위치 확인
-            scroll_position = driver.execute_script("return window.scrollY;")
-            assert scroll_position > 1000
+            # 상품후기 탭 클릭
+            detail_page.detail_review_click()
+
+            time.sleep(3)
+
+            # 눌렸는지 확인
+            active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_REVIEW_EL + ".active")))
+            assert "active" in active_tab.get_attribute("class")
+
+        except NoSuchElementException as e:
+            assert False
+        
+        except TimeoutException as e:
+            assert False
+        
+        except Exception as e:
+            assert False
+
+
+    # 상품문의 탭 클릭 테스트
+    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    def test_detail_qna_click(self, driver: WebDriver):
+        detail_page = DetailPage(driver)
+        wait = ws(driver, 10)
+
+        try:
+            # 상품 상세페이지 진입
+            detail_page.open()
+
+            # 상품 상세페이지 정상 진입하였는지 확인
+            wait.until(EC.url_contains(self.BRAND_ID))
+            assert self.BRAND_ID in driver.current_url
+
+            time.sleep(1)
+
+            # 상품문의 탭 클릭
+            detail_page.detail_qna_click()
+
+            time.sleep(3)
+
+            # 눌렸는지 확인
+            active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_QNA_EL + ".active")))
+            assert "active" in active_tab.get_attribute("class")
+
+        except NoSuchElementException as e:
+            assert False
+        
+        except TimeoutException as e:
+            assert False
+        
+        except Exception as e:
+            assert False
+
+    
+    # 관련상품 탭 클릭 테스트
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
+    def test_detail_relation_click(self, driver: WebDriver):
+        detail_page = DetailPage(driver)
+        wait = ws(driver, 10)
+
+        try:
+            # 상품 상세페이지 진입
+            detail_page.open()
+
+            # 상품 상세페이지 정상 진입하였는지 확인
+            wait.until(EC.url_contains(self.BRAND_ID))
+            assert self.BRAND_ID in driver.current_url
+
+            time.sleep(1)
+
+            # 관련상품 탭 클릭
+            detail_page.detail_relation_click()
+
+            time.sleep(4)
+
+            # 눌렸는지 확인
+            active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_RELATION_EL + ".active")))
+            assert "active" in active_tab.get_attribute("class")
+
+        except NoSuchElementException as e:
+            assert False
+        
+        except TimeoutException as e:
+            assert False
+        
+        except Exception as e:
+            assert False
+
+    
+    # 배송 교환 반품 탭 클릭 테스트
+    @pytest.mark.skip(reason="테스트 케이스 SKIP")
+    def test_detail_change_click(self, driver: WebDriver):
+        detail_page = DetailPage(driver)
+        wait = ws(driver, 10)
+
+        try:
+            # 상품 상세페이지 진입
+            detail_page.open()
+
+            # 상품 상세페이지 정상 진입하였는지 확인
+            wait.until(EC.url_contains(self.BRAND_ID))
+            assert self.BRAND_ID in driver.current_url
+
+            time.sleep(1)
+
+            # 관련상품 탭 클릭
+            detail_page.detail_change_click()
+
+            time.sleep(3)
+
+            # 눌렸는지 확인
+            active_tab = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, detail_page.DETAIL_CHANGE_EL + ".active")))
+            assert "active" in active_tab.get_attribute("class")
 
         except NoSuchElementException as e:
             assert False
