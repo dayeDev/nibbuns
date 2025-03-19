@@ -1,64 +1,58 @@
-import pytest
-import sys
-import os
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.alert import Alert
+import time
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
-from shopping_basket import ShoppingBasket  
-
-@pytest.mark.usefixtures("driver")
-class TestShoppingBasket:
+class ShoppingBasket:
+    URL = "https://www.nibbuns.co.kr/shop/basket.html"
+    LOGIN_URL = "https://www.nibbuns.co.kr/shop/member.html?type=login"
     
-    @classmethod
-    def setup_class(cls):
-        cls.driver = pytest.global_driver 
-        cls.basket_page = ShoppingBasket(cls.driver)
-        cls.basket_page.login()  
-        cls.basket_page.open()  
-
-    def test_open_shopping_basket(self):
-        assert "basket.html" in self.driver.current_url, "장바구니 페이지가 정상적으로 열리지 않았습니다."
-
-    def test_increase_quantity(self):
-        self.basket_page.increase_quantity()
-        WebDriverWait(self.driver, 5).until(
-        lambda d: d.find_element(By.NAME, "amount").get_attribute("value") == "2"
-        )
-        assert self.driver.find_element(By.NAME, "amount").get_attribute("value") == "2", "수량이 증가되지 않았습니다."
-    
-    def test_decrease_quantity(self):
-        self.basket_page.decrease_quantity()
-        WebDriverWait(self.driver, 5).until(
-        lambda d: d.find_element(By.NAME, "amount").get_attribute("value") == "1"
-        )
-    assert self.driver.find_element(By.NAME, "amount").get_attribute("value") == "1", "수량이 감소되지 않았습니다!"
-
-    def test_apply_quantity_change(self):
-        self.basket_page.apply_quantity_change()
-        WebDriverWait(self.driver, 5).until(EC.staleness_of(self.driver.find_element(By.CLASS_NAME, "btn_option")))
-        assert "basket.html" in self.driver.current_url, "수량 적용 후 페이지가 새로고침되지 않았습니다!"
-
-    def test_remove_item(self):
-        self.basket_page.remove_item()
-        WebDriverWait(self.driver, 5).until(EC.alert_is_present())  
-        alert = self.driver.switch_to.alert 
-        alert.accept()
-        WebDriverWait(self.driver, 5).until(EC.invisibility_of_element((By.CLASS_NAME, "btn_select")))
-        assert not self.driver.find_elements(By.CLASS_NAME, "btn_select"), "상품이 삭제되지 않았습니다!"
-
-    def test_proceed_to_checkout(self):
-        self.basket_page.proceed_to_checkout()
+    def __init__(self,driver: WebDriver):
+        self.driver = driver
+        self.wait = WebDriverWait(driver, 10)
         
-        try:
-            WebDriverWait(self.driver, 5).until(EC.alert_is_present())
-            alert = self.driver.switch_to.alert
-            alert.accept()  
-        except:
-            pass  
+    def login(self):
+        self.driver.get(self.LOGIN_URL)
+        time.sleep(1)  
 
-        WebDriverWait(self.driver, 5).until(EC.url_contains("member.html"))
-        assert "member.html" in self.driver.current_url, "주문하기 버튼 클릭 후 로그인 페이지로 이동하지 않았습니다!"
+        id_input = self.wait.until(EC.visibility_of_element_located((By.NAME, "id")))
+        id_input.send_keys("kim02jo")
+
+        pw_input = self.wait.until(EC.visibility_of_element_located((By.NAME, "passwd")))
+        pw_input.send_keys("1q2w3e4r!@")
+
+        login_button = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "CSSbuttonBlack")))
+        login_button.click()
+
+        time.sleep(1)  
+    
+    def open(self):
+        self.driver.get(self.URL)
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "btn_select")))        
+    
+    def increase_quantity(self): # + 버튼
+        plus_button = self.driver.find_element(By.CLASS_NAME, "a_up")
+        plus_button.click()
+        
+    def decrease_quantity(self): # - 버튼
+        minus_button = self.driver.find_element(By.CLASS_NAME, "a_dw")
+        minus_button.click()
+        
+    def apply_quantity_change(self): # 수량 적용 버튼
+        apply_button = self.driver.find_element(By.CLASS_NAME, "btn_option")
+        apply_button.click()
+        
+    def remove_item(self): # 삭제하기
+        delete_button = self.driver.find_element(By.CLASS_NAME, "btn_select")
+        delete_button.click()
+        
+        alert = Alert(self.driver) # 팝업
+        alert.accept()
+        
+    def proceed_to_checkout(self): # 주문하기기
+        order_button = self.driver.find_element(By.CLASS_NAME, "CSSbuttonBlack")
+        order_button.click()       
