@@ -24,7 +24,7 @@ class MainPage:
         self.click_button("//a[@class='child purple' and contains(text(), 'BEST50')]")
    
     def click_top(self):
-        self.click_button("//a[@class='child ' and contains(text(), 'TOP') and @style='width: 27px; float: right;']")
+        self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=023')]", "shopbrand.html?xcode=023")
     
     def click_blouse_shirt(self):
         self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=024')]", "shopbrand.html?xcode=024")
@@ -56,5 +56,5 @@ class MainPage:
 
 
     # <정상로딩테스트>
-    # 로고 클릭 시 메인 페이지 이동 <제일 나중에 해야지 
+    # 로고 클릭 시 메인 페이지 이동 <나중에
     # 

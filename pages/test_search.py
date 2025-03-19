@@ -47,7 +47,9 @@ class TestMainPage:
             except Exception:
                 pass
 
-        # 없는 상품 검색시 검색 안됨 노트북검색 ㄱ
+    # 없는 상품 검색
+
+    
     
     #         # 검색 후 인기상품, 낮은가격, 높은가격 순 정렬
     #         for sort_type in ["인기상품", "낮은가격", "높은가격"]:
