@@ -8,23 +8,22 @@ from selenium.webdriver.support.select import Select
 
 class DetailPage:
     # 요소
-    URL = "https://www.nibbuns.co.kr/shop/shopdetail.html?branduid=69560"
+    URL = "https://www.nibbuns.co.kr/shop/shopdetail.html?branduid=70015"
     OPTION_LIST_EL = "basic_option"
     BUY_BUTTON_EL = "btn_buy"
     CART_BUTTON_EL = "cartBtn"
     DETAIL_GOODS_EL = "#productDetail li.first > a"
     DETAIL_REVIEW_EL = "#productDetail li:nth-child(2) > a"
     DETAIL_QNA_EL = "#productDetail li:nth-child(3) > a"
-    DETAIL_RELATION_EL = "#productDetail > div.page-body > div:nth-child(3) > ul > li:nth-child(4) > a"
+    DETAIL_RELATION_EL = "#productDetail li:nth-child(4) > a"
     DETAIL_CHANGE_EL = "#productDetail li:nth-child(5) > a"
     FIXED_BUY_EL = "fixed_buy"
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
-        self.wait = ws(driver, 10)
+        self.wait = ws(driver, 20)
     
     # 상품 페이지 열기
-    # [니쁜스강력추천]원터치 볼드 볼 이어링
     def open(self):
         self.driver.get(self.URL)
 
@@ -48,41 +47,44 @@ class DetailPage:
     # 상품상세 탭 클릭
     def detail_goods_click(self):
         detail_goods_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_GOODS_EL)))
-        detail_goods_tab.click()
+        self.driver.execute_script("arguments[0].click();", detail_goods_tab)
 
     # 상품후기 탭 클릭
     def detail_review_click(self):
         detail_review_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_REVIEW_EL)))
-        detail_review_tab.click()
+        self.driver.execute_script("arguments[0].click();", detail_review_tab)
     
     # 상품문의 탭 클릭
     def detail_qna_click(self):
         detail_qna_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_QNA_EL)))
-        detail_qna_tab.click()
+        self.driver.execute_script("arguments[0].click();", detail_qna_tab)
 
     # 관련상품 탭 클릭
     def detail_relation_click(self):
         detail_relation_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_RELATION_EL)))
-        detail_relation_tab.click()
+        self.driver.execute_script("arguments[0].click();", detail_relation_tab)
 
     # 배송 교환 반품 탭 클릭
     def detail_change_click(self):
         detail_change_tab = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.DETAIL_CHANGE_EL)))
-        detail_change_tab.click()
+        self.driver.execute_script("arguments[0].click();", detail_change_tab)
 
     # 하단 스크롤 후 바로 구매 클릭
     def fixed_buy_click(self):
+        # 현재 페이지의 전체 높이를 가져옵니다
+        scroll_height = self.driver.execute_script("return document.body.scrollHeight")
+        # 전체 높이의 절반만큼 스크롤
+        self.driver.execute_script(f"window.scrollTo(0, {scroll_height / 2});")
+        # 버튼 클릭
         fixed_buy_button = self.wait.until(EC.presence_of_element_located((By.ID, self.FIXED_BUY_EL)))
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", fixed_buy_button)
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", fixed_buy_button)  # 버튼이 보이도록 스크롤
         fixed_buy_button.click()
 
     # 알럿 처리 함수
     def handle_alert(self):
         try:
             alert = self.driver.switch_to.alert
-            alert_text = alert_text
             alert.accept()
-            return alert_text
         except:
             pass
 
