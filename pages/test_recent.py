@@ -17,17 +17,12 @@ from src.recent import Recent
 class TestRecent:
     BRAND_ID = "70015"
     URL_NAME = "todaygoods"
-    COMPARE_PRODUCT = {
-        "product_title" : "(하이퀄리티)볼드하트 담수진주 네크리스",
-        "product_price" : "29,000원",
-        "product_code" : "70015"
-    }
     title = "product_title"
     price = "product_price"
     code = "product_code"
 
     # 로그 및 스크린샷 경로 설정
-    LOG_DIR = "fail_log/test_recent"
+    LOG_DIR = "logs/test_recent"
     SCREENSHOT_DIR = f"{LOG_DIR}/fail_screenshot"
 
     # 폴더가 없다면 생성
@@ -75,8 +70,8 @@ class TestRecent:
             driver.save_screenshot(self.screenshot_name)
             assert False
     
-    
-    # 오늘 본 상품 전체 저장 테스트
+
+    # 오늘 본 상품 정보 저장 테스트
     #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_save_today_view_product(self, driver: WebDriver):
         recent = Recent(driver)
@@ -104,15 +99,8 @@ class TestRecent:
 
             # 오늘 본 상품 전체 저장 확인
             assert len(products) > 0
-            logging.info("오늘 본 상품 전체 저장 성공")
+            logging.info("오늘 본 상품 정보 저장 성공")
             logging.info(products)
-
-            # 비교 상품 존재 확인
-            for product in products:
-                assert self.COMPARE_PRODUCT[self.title] in product[self.title]
-                assert self.COMPARE_PRODUCT[self.price] in product[self.price]
-                assert self.COMPARE_PRODUCT[self.code] in product[self.code]
-            self.logger.info("비교 상품 존재 확인 완료")
         
         except NoSuchElementException as e:
             self.logger.error(f"오늘 본 상품 전체 저장 실패: 요소를 찾을 수 없음. {e}")
@@ -126,6 +114,107 @@ class TestRecent:
         
         except Exception as e:
             self.logger.error(f"오늘 본 상품 전체 저장 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
+            assert False
+
+    
+    # 비교용 상품 정보 저장 테스트
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
+    def test_save_compare_droduct(self, driver: WebDriver):
+        recent = Recent(driver)
+        wait = ws(driver, 20)
+
+        try:
+            # 비교용 상품 페이지 진입
+            recent.open_compare_product()
+
+            # 비교용 상품 페이지 진입 확인
+            wait.until(EC.url_contains(self.BRAND_ID))
+            assert self.BRAND_ID in driver.current_url
+            self.logger.info("비교용 상품 페이지 진입 성공")
+
+            # 비교용 상품 정보 저장
+            compare_products = recent.save_compare_droduct()
+
+            # 비교용 상품 정보 저장 확인
+            assert len(compare_products) > 0
+            logging.info("비교용 상품 정보 저장 성공")
+            logging.info(compare_products)
+        
+        except NoSuchElementException as e:
+            self.logger.error(f"비교용 상품 정보 저장 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
+            assert False
+        
+        except TimeoutException as e:
+            self.logger.error(f"비교용 상품 정보 저장 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
+            assert False
+        
+        except Exception as e:
+            self.logger.error(f"비교용 상품 정보 저장 실패: 알 수 없는 오류 발생. {e}")
+            driver.save_screenshot(self.screenshot_name)
+            assert False
+
+
+    # 오늘 본 상품 정보 저장 후 비교용 상품과 비교 테스트
+    #@pytest.mark.skip(reason="테스트 케이스 SKIP")
+    def test_compare_product(self, driver: WebDriver):
+        recent = Recent(driver)
+        wait = ws(driver, 20)
+
+        try:
+            # 비교용 상품 페이지 진입
+            recent.open_compare_product()
+
+            # 비교용 상품 페이지 진입 확인
+            wait.until(EC.url_contains(self.BRAND_ID))
+            assert self.BRAND_ID in driver.current_url
+            self.logger.info("비교용 상품 페이지 진입 성공")
+
+            # 비교용 상품 정보 저장
+            compare_products = recent.save_compare_droduct()
+
+            # 가교용 상품 정보 저장 확인
+            assert len(compare_products) > 0
+            logging.info("비교용 상품 정보 저장 성공")
+            logging.info(compare_products)
+
+            # 오늘 본 상품 페이지 진입
+            recent.open()
+
+            # 오늘 본 상품 페이지 진입 확인
+            wait.until(EC.url_contains(self.URL_NAME))
+            assert self.URL_NAME in driver.current_url
+            self.logger.info("오늘 본 상품 페이지 진입 성공")
+
+            # 오늘 본 상품 전체 저장
+            products = recent.save_today_view_product()
+
+            # 오늘 본 상품 전체 저장 확인
+            assert len(products) > 0
+            logging.info("오늘 본 상품 정보 저장 성공")
+            logging.info(products)
+
+            # 비교 상품 존재 확인
+            for product in products:
+                assert compare_products[0][self.title] in product[self.title]
+                assert compare_products[0][self.price] in product[self.price]
+                assert compare_products[0][self.code] in product[self.code]
+            self.logger.info("비교 상품 존재 확인 완료")
+        
+        except NoSuchElementException as e:
+            self.logger.error(f"비교 상품 존재 확인 실패: 요소를 찾을 수 없음. {e}")
+            driver.save_screenshot(self.screenshot_name)
+            assert False
+        
+        except TimeoutException as e:
+            self.logger.error(f"비교 상품 존재 확인 실패: 시간 초과. {e}")
+            driver.save_screenshot(self.screenshot_name)
+            assert False
+        
+        except Exception as e:
+            self.logger.error(f"비교 상품 존재 확인 실패: 알 수 없는 오류 발생. {e}")
             driver.save_screenshot(self.screenshot_name)
             assert False
 
