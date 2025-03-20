@@ -18,6 +18,8 @@ class Search:
         search_input_box.send_keys(item_name)
         search_input_box.send_keys(Keys.ENTER)
 
+  
+
     # # 검색 후 정렬 버튼 클릭
     # def sort_by_items(self, sort_type: str):
     #     sort_xpath = f"//button[contains(text(), '{sort_type}')]"
