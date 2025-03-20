@@ -9,7 +9,9 @@ def driver():
     
     # 🌟 성능 최적화 옵션 추가
     chrome_options.add_argument("--disable-extensions")  # 확장 프로그램 비활성화
-    chrome_options.add_argument("--start-maximized")  # 창 최대화
+    # chrome_options.add_argument("--start-maximized")  # 창 최대화
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.page_load_strategy = "eager"  # 빠른 페이지 로드
     chrome_options.add_argument("--disable-popup-blocking")  # 팝업 차단 해제
     chrome_options.add_argument("--disable-gpu")  # GPU 가속 비활성화 (리소스 절약)
     chrome_options.add_argument("--no-sandbox")  # 샌드박스 비활성화 (속도 향상)
