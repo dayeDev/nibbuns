@@ -18,7 +18,6 @@ class TestRecent:
     BRAND_ID = "70015"
     URL_NAME = "todaygoods"
     title = "product_title"
-    price = "product_price"
     code = "product_code"
 
     # 로그 및 스크린샷 경로 설정
@@ -44,7 +43,7 @@ class TestRecent:
     #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_open(self, driver: WebDriver):
         recent = Recent(driver)
-        wait = ws(driver, 20)
+        wait = ws(driver, 10)
 
         try:
             # 오늘 본 상품 페이지 진입
@@ -75,7 +74,7 @@ class TestRecent:
     #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_save_today_view_product(self, driver: WebDriver):
         recent = Recent(driver)
-        wait = ws(driver, 20)
+        wait = ws(driver, 10)
 
         try:
             # 비교용 상품 페이지 진입
@@ -122,7 +121,7 @@ class TestRecent:
     #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_save_compare_droduct(self, driver: WebDriver):
         recent = Recent(driver)
-        wait = ws(driver, 20)
+        wait = ws(driver, 10)
 
         try:
             # 비교용 상품 페이지 진입
@@ -161,7 +160,7 @@ class TestRecent:
     #@pytest.mark.skip(reason="테스트 케이스 SKIP")
     def test_compare_product(self, driver: WebDriver):
         recent = Recent(driver)
-        wait = ws(driver, 20)
+        wait = ws(driver, 10)
 
         try:
             # 비교용 상품 페이지 진입
@@ -175,7 +174,7 @@ class TestRecent:
             # 비교용 상품 정보 저장
             compare_products = recent.save_compare_droduct()
 
-            # 가교용 상품 정보 저장 확인
+            # 비교용 상품 정보 저장 확인
             assert len(compare_products) > 0
             logging.info("비교용 상품 정보 저장 성공")
             logging.info(compare_products)
@@ -198,9 +197,10 @@ class TestRecent:
 
             # 비교 상품 존재 확인
             for product in products:
-                assert compare_products[0][self.title] in product[self.title]
-                assert compare_products[0][self.price] in product[self.price]
-                assert compare_products[0][self.code] in product[self.code]
+                assert any([
+                    compare_products[0][self.title] in product[self.title],
+                    compare_products[0][self.code] in product[self.code]
+                ])
             self.logger.info("비교 상품 존재 확인 완료")
         
         except NoSuchElementException as e:

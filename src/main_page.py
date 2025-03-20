@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
+import time
 
 class MainPage:
     URL = "https://www.nibbuns.co.kr/"
@@ -16,8 +17,13 @@ class MainPage:
     def open(self):
         self.driver.get(self.URL)
 
-    # 버튼 클릭
+    # 페이지 로드 시간 측정
+    def get_page_load_time(self):
+        start_time = time.time()
+        self.open()
+        return time.time() - start_time
 
+    # 버튼 클릭
     def click_button(self, xpath: str):
         button = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, xpath)))
@@ -58,9 +64,15 @@ class MainPage:
 
     def click_sale(self):
         self.click_button("//a[contains(@class, 'child') and contains(@href, 'xcode=009')]")
+    
+    #메인 로고 클릭 시 메인으로 이동
+    def click_main_logo(self):
+        logo = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//img[@src='/design/piasom/img/logo.png']")))
+        logo.click()
 
+    #배너 클릭
+    def banner_click(self, selector):
+        banner = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, selector)))
+        banner.click()
 
-
-    # <정상로딩테스트>
-    # 로고 클릭 시 메인 페이지 이동 <나중에
-    # 
