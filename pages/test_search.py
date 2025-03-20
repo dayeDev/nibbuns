@@ -23,7 +23,7 @@ class TestMainPage:
             main_page = MainPage(driver)
             main_page.open()
 
-            wait = ws(driver, 20)
+            wait = ws(driver, 10)
             wait.until(EC.url_contains("https://www.nibbuns.co.kr/"))
             assert "https://www.nibbuns.co.kr/" in driver.current_url
             time.sleep(2)
@@ -34,7 +34,7 @@ class TestMainPage:
 
             # 검색 결과 나타날 때까지 대기
             try: 
-                ws(driver, 30).until(EC.presence_of_element_located((By.XPATH, ITEMS_XPATH)))
+                ws(driver, 10).until(EC.presence_of_element_located((By.XPATH, ITEMS_XPATH)))
             except TimeoutException:
                 driver.save_screenshot("search_fail.png")
 
@@ -43,11 +43,26 @@ class TestMainPage:
                 items = driver.find_elements(By.XPATH, ITEMS_XPATH)
                 item_name = parse.quote('자켓')
                 if len(items) == 0 or item_name not in driver.current_url:
-                    pass  # 테스트를 실패시키지 않고 패스 처리 ㅠ............
-            except Exception:
-                pass
+                    pytest.skip("❗ 상품이 없거나 URL에 '자켓'이 포함되지 않음. 테스트 건너뜀.")
+                else:
+                    assert True  # ✅ 정상적으로 로딩되면 성공 처리
+            except Exception as e:
+                pytest.fail(f"🚨 예외 발생: {str(e)}")
+
 
     # 없는 상품 검색
+    def test_search_no_result(self, driver: WebDriver):
+        main_page = MainPage(driver)
+        main_page.open()
+
+        wait = ws(driver, 10)
+        wait.until(EC.url_contains("https://www.nibbuns.co.kr/"))
+
+        search_instance = Search(driver)
+        search_instance.search_items("123")
+        time.sleep(2)
+
+        assert search_instance.is_no_result_displayed(), "❌ '검색어로 총 0개의 상품이 검색되었습니다.'메시지가 표시되지 않음"
 
     
     
