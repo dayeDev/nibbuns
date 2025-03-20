@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 
 class Search:
     SEARCH_INPUT_SELECTOR = "input.MS_search_word.input-keyword"
@@ -17,6 +18,15 @@ class Search:
         search_input_box.clear()
         search_input_box.send_keys(item_name)
         search_input_box.send_keys(Keys.ENTER)
+
+    # 없는거 검색하기
+    def is_no_result_displayed(self):
+        try:
+            no_result_message = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//dd[@class='count_pro' and contains(text(), '검색어로 총') and contains(text(), '0개')]")))
+            return no_result_message.is_displayed()
+        except TimeoutException:
+            return False
 
   
 
