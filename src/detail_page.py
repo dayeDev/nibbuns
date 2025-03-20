@@ -9,15 +9,20 @@ from selenium.webdriver.support.select import Select
 class DetailPage:
     # 요소
     URL = "https://www.nibbuns.co.kr/shop/shopdetail.html?branduid=70015"
+    COMPARE_URL = "https://www.nibbuns.co.kr/shop/mypage.html?mypage_type=mywishlist"
     OPTION_LIST_EL = "basic_option"
     BUY_BUTTON_EL = "btn_buy"
     CART_BUTTON_EL = "cartBtn"
+    WISH_LIST_BUTTON_EL = "#info > div.prd-btns > a:nth-child(4)"
     DETAIL_GOODS_EL = "#productDetail li.first > a"
     DETAIL_REVIEW_EL = "#productDetail li:nth-child(2) > a"
     DETAIL_QNA_EL = "#productDetail li:nth-child(3) > a"
     DETAIL_RELATION_EL = "#productDetail li:nth-child(4) > a"
     DETAIL_CHANGE_EL = "#productDetail li:nth-child(5) > a"
     FIXED_BUY_EL = "fixed_buy"
+    WISH_LIST_PRODUCTS_EL = "#myWish"
+    WISH_LIST_PRODUCT_TITLE_EL = "tb-left"
+    WISH_LIST_PRODUCT_URL_EL = "tb-center"
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -43,6 +48,11 @@ class DetailPage:
     def cart_click(self):
         cart_button = self.wait.until(EC.element_to_be_clickable((By.ID, self.CART_BUTTON_EL)))
         cart_button.click()
+    
+    # 관심상품 버튼 클릭
+    def wish_list_click(self):
+        wish_list_button = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.WISH_LIST_BUTTON_EL)))
+        wish_list_button.click()
 
     # 상품상세 탭 클릭
     def detail_goods_click(self):
@@ -99,6 +109,25 @@ class DetailPage:
         login_button = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "CSSbuttonBlack")))
         login_button.click()
         time.sleep(1)
+
+    # 확인용 관심상품 페이지 열기
+    def open_wish_list(self):
+        self.driver.get(self.COMPARE_URL)
+
+    # 확인용 관심상품 정보 저장
+    def save_compare_wish_list_product(self):
+        self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.WISH_LIST_PRODUCTS_EL)))
+        wish_list_products = self.driver.find_elements(By.CSS_SELECTOR, self.WISH_LIST_PRODUCTS_EL)
+        wish_list_product_list = []
+        for product in wish_list_products:
+            product_title = product.find_element(By.CLASS_NAME, self.WISH_LIST_PRODUCT_TITLE_EL).text
+            product_url = product.find_element(By.CLASS_NAME, self.WISH_LIST_PRODUCT_URL_EL).get_attribute("href")
+            product_code = product_url.split("branduid=")[1]
+            wish_list_product_list.append({
+                "product_title" : product_title,
+                "product_code" : product_code
+            })
+        return wish_list_product_list
     
 
 
