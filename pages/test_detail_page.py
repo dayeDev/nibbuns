@@ -21,7 +21,7 @@ class TestDetailPage:
     OPTION_NAME = "MK_p-name"
 
     # 로그 및 스크린샷 경로 설정
-    LOG_DIR = "fail_log/test_detail_page"
+    LOG_DIR = "logs/test_detail_page"
     SCREENSHOT_DIR = f"{LOG_DIR}/fail_screenshot"
 
     # 폴더가 없다면 생성
