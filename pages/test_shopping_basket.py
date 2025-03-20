@@ -15,19 +15,16 @@ class TestShoppingBasket:
     
     @pytest.fixture(autouse=True)
     def setup_method(self, driver):
-        """각 테스트 실행 전에 새로운 driver 인스턴스를 설정"""
         self.driver = driver  
-        self.driver.implicitly_wait(10)  # ✅ 암시적 대기 시간 10초로 증가
+        self.driver.implicitly_wait(10)  
         self.basket_page = ShoppingBasket(self.driver)
         self.basket_page.login()
         self.basket_page.open()
 
     def test_open_shopping_basket(self):
-        """장바구니 페이지 열기 테스트"""
         assert "basket.html" in self.driver.current_url, "장바구니 페이지가 정상적으로 열리지 않았습니다."
 
     def test_quantity_change(self):
-        """수량 증가 후 감소 테스트"""
         
         # Step 1: 초기 수량 확인
         initial_amount = self.driver.find_element(By.NAME, "amount").get_attribute("value")
@@ -56,7 +53,6 @@ class TestShoppingBasket:
         assert self.driver.find_element(By.NAME, "amount").get_attribute("value") == "1", "수량이 감소되지 않았습니다!"
 
     def test_apply_quantity_change(self):
-        """수량 변경 적용 테스트"""
         self.basket_page.apply_quantity_change()
         try:
             WebDriverWait(self.driver, 10).until(
@@ -68,7 +64,6 @@ class TestShoppingBasket:
         assert "basket.html" in self.driver.current_url, "수량 적용 후 페이지가 새로고침되지 않았습니다!"
 
     def test_remove_item(self):
-        """장바구니에서 상품 삭제 테스트"""
         self.basket_page.remove_item()
         try:
             WebDriverWait(self.driver, 10).until(EC.alert_is_present())  
@@ -87,7 +82,6 @@ class TestShoppingBasket:
         assert not self.driver.find_elements(By.CLASS_NAME, "btn_select"), "상품이 삭제되지 않았습니다!"
 
     def test_proceed_to_checkout(self):
-        """주문하기 버튼 클릭 후 로그인 페이지 이동 테스트"""
         self.basket_page.proceed_to_checkout()
         try:
             WebDriverWait(self.driver, 10).until(EC.url_contains("member.html"))
