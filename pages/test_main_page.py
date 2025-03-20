@@ -28,10 +28,15 @@ class TestMainPage:
         assert "https://www.nibbuns.co.kr/" in driver.current_url
         time.sleep(2)
 
+        driver.quit()
+
 # 버튼 클릭
     def test_click_buttons(self, driver: WebDriver):
         main_page = MainPage(driver)
         wait = ws(driver, 10)
+
+        main_page.open()
+        time.sleep(2)
 
         button_tests = [
             (main_page.click_news, "shopbrand.html?xcode=016"),
